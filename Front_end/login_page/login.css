@@ -1,0 +1,106 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+
+.container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background: url("farm.png") center / cover no-repeat;
+}
+
+/* LEFT SIDE */
+.left {
+    flex: 1;
+    position: relative;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    color: white;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.overlay h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.overlay p {
+    max-width: 420px;
+    font-size: 16px;
+}
+
+/* RIGHT SIDE */
+.right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: 360px;
+    padding: 30px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 8px;
+}
+
+.login-card h2 {
+    margin-bottom: 20px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.input-group span {
+    margin-right: 8px;
+}
+
+.input-group input {
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 10px;
+    background: transparent;
+}
+
+/* BUTTON */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.login-btn:hover {
+    background: #256528;
+}
+
+.footer-text {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #555;
+}

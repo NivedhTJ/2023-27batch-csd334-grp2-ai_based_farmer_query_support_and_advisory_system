@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer AI Assistance | Ask AI</title>
+    <link rel="stylesheet" href="query.css">
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- CHAT AREA -->
+    <div class="chat-container" id="chatBox">
+
+        <!-- AI welcome message -->
+        <div class="message ai">
+            <img src="avatar.png" class="avatar">
+            <div class="bubble">
+                Hello 👋 I’m your AI farming assistant.  
+                Ask me anything about crops, pests, or farming practices.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- INPUT AREA -->
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Type your farming question..." />
+        <button onclick="sendMessage()">Ask AI</button>
+    </div>
+
+</div>
+
+<script src="query.js"></script>
+</body>
+</html>
