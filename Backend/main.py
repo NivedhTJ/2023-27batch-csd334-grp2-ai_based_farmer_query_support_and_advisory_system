@@ -56,13 +56,13 @@ async def login(request: LoginRequest):
 async def ask_farmer_bot(request: QueryRequest):
     try:
         system_prompt = (
-            "Limit responses to 50 words. "
+            "Limit responses to 100 words. "
             "You are an expert agricultural assistant. "
             "Provide simple, practical advice for farmers."
         )
 
         response = ollama.chat(
-            model="llama3.2:1b",
+            model="gemma3:1b",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": request.query}

@@ -120,3 +120,27 @@ header p {
     background: rgba(46, 125, 50, 0.5);
     border-radius: 3px;
 }
+
+/* THINKING ANIMATION */
+.thinking {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 14px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background-color: #2e7d32;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes pulse {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+    40% { transform: scale(1.2); opacity: 1; }
+}
