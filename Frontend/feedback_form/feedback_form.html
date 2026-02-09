@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Feedback | AI Advisory System</title>
+    <link rel="stylesheet" href="feedback_form.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Farmer Feedback Form</h2>
+
+    <form id="feedbackForm">
+        <label for="name">Farmer Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+        <label for="mobile">Mobile Number</label>
+        <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" required>
+
+        <label for="category">Farming Type</label>
+        <select id="category" name="category" required>
+            <option value="">-- Select --</option>
+            <option value="crop">Crop Farming</option>
+            <option value="livestock">Livestock Farming</option>
+            <option value="mixed">Mixed Farming</option>
+        </select>
+
+        <label>How helpful was the AI advice?</label>
+        <div class="rating">
+            <input type="radio" name="rating" value="1"> 1
+            <input type="radio" name="rating" value="2"> 2
+            <input type="radio" name="rating" value="3"> 3
+            <input type="radio" name="rating" value="4"> 4
+            <input type="radio" name="rating" value="5" required> 5
+        </div>
+
+        <label for="feedback">Your Feedback / Suggestions</label>
+        <textarea id="feedback" name="feedback" rows="4" placeholder="Share your experience with the AI advisory system..." required></textarea>
+
+        <button type="submit">Submit Feedback</button>
+    </form>
+
+    <div class="footer-text">
+        Thank you for helping us improve our AI-based Farmer Advisory System
+    </div>
+</div>
+
+<script src="feedback_form.js"></script>
+</body>
+</html>
