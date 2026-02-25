@@ -1,13 +1,10 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-
 import io
 import numpy as np
 from PIL import Image
 import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers, models # type: ignore
+from tensorflow import keras #type:ignore
+from tensorflow.keras import layers, models #type:ignore
 import mysql.connector
 import ollama
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
@@ -16,6 +13,7 @@ from pydantic import BaseModel
 
 app = FastAPI(title="AI Farmer Query Support")
 
+# Enable CORS for frontend integration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,6 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Plant Disease Classes
 CLASSES = [
     'Apple_scab', 'Apple_black_rot', 'Apple_cedar_apple_rust', 'Apple_healthy',
     'Background_without_leaves', 'Blueberry_healthy', 'Cherry_powdery_mildew',
@@ -40,35 +39,38 @@ CLASSES = [
 ]
 
 def load_farmer_model():
+    """Loads the MobileNetV2-based plant disease classifier."""
     preprocess_input = keras.applications.mobilenet_v2.preprocess_input
     base_model = keras.applications.MobileNetV2(
-        input_shape=(224, 224, 3), 
-        include_top=False, 
+        input_shape=(224, 224, 3),
+        include_top=False,
         weights='imagenet'
     )
     base_model.trainable = False
 
     m = models.Sequential([
         layers.Input(shape=(224, 224, 3)),
-        layers.Lambda(preprocess_input), 
+        layers.Lambda(preprocess_input),
         base_model,
         layers.GlobalAveragePooling2D(),
         layers.Dense(128, activation='relu'),
         layers.Dropout(0.3),
         layers.Dense(len(CLASSES), activation='softmax')
     ])
-    
+
     if os.path.exists('models/trained_farmer_model.h5'):
         m.load_weights('models/trained_farmer_model.h5')
+
     return m
 
 MODEL = load_farmer_model()
 
 def get_db():
+    """Establishes connection to MySQL database."""
     return mysql.connector.connect(
-        host="localhost", 
-        user="root", 
-        password="", 
+        host="localhost",
+        user="root",
+        password="",
         database="farmer_ai"
     )
 
@@ -80,13 +82,11 @@ class LoginRequest(BaseModel):
 async def login(request: LoginRequest):
     db = get_db()
     cursor = db.cursor(dictionary=True)
-
     cursor.execute(
         "SELECT id, username FROM users WHERE username=%s AND password=%s",
         (request.username, request.password)
     )
     user = cursor.fetchone()
-
     cursor.close()
     db.close()
 
@@ -94,15 +94,78 @@ async def login(request: LoginRequest):
         raise HTTPException(status_code=401, detail="Invalid username or password")
 
     return {
-        "success": True, 
+        "success": True,
         "message": "Login successful",
-        "user_id": user["id"]
+        "user_id": user["id"],
+        "username": user["username"]   
     }
+
+@app.get("/sessions/{user_id}")
+async def get_sessions(user_id: int):
+    try:
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
+
+        cursor.execute(
+            """
+            SELECT session_id, user_query as title 
+            FROM chat_history 
+            WHERE user_id = %s 
+            AND query_id IN (
+                SELECT MIN(query_id) 
+                FROM chat_history 
+                GROUP BY session_id
+            )
+            ORDER BY query_id DESC
+            """,
+            (user_id,)
+        )
+
+        sessions = cursor.fetchall()
+        cursor.close()
+        db.close()
+        return {"sessions": sessions}
+
+    except Exception as e:
+        print(f"Session Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/history/{session_id}")
+async def get_chat_history(session_id: str):
+    try:
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
+        cursor.execute(
+            "SELECT user_query, ai_response FROM chat_history WHERE session_id=%s ORDER BY query_id ASC",
+            (session_id,)
+        )
+        history = cursor.fetchall()
+        cursor.close()
+        db.close()
+        return {"history": history}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/clear/{user_id}")
+async def clear_history(user_id: int):
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM chat_history WHERE user_id=%s", (user_id,))
+        db.commit()
+        cursor.close()
+        db.close()
+        return {"success": True, "message": "History cleared"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/ask")
 async def ask_farmer_bot(
-    user_id: int = Form(...), 
-    query: str = Form(None), 
+    user_id: int = Form(...),
+    session_id: str = Form(...),
+    query: str = Form(None),
     file: UploadFile = File(None)
 ):
     try:
@@ -114,11 +177,12 @@ async def ask_farmer_bot(
             img = Image.open(io.BytesIO(img_data)).resize((224, 224))
             img_array = np.array(img).astype('float32')
             img_array = np.expand_dims(img_array, axis=0)
-            
+
             preds = MODEL.predict(img_array)
             diagnosis = CLASSES[np.argmax(preds)]
             user_input = f"The plant is diagnosed with {diagnosis}. {user_input}"
 
+        # Get AI Response
         response = ollama.chat(
             model="gemma3:1b",
             messages=[
@@ -126,18 +190,28 @@ async def ask_farmer_bot(
                 {"role": "user", "content": user_input}
             ]
         )
+
         ai_msg = response["message"]["content"]
 
+        # Save to Database
         db = get_db()
         cursor = db.cursor()
+
+        db_query_text = query if query else f"Scan: {diagnosis}"
+
         cursor.execute(
-            "INSERT INTO chat_history (user_id, user_query, ai_response) VALUES (%s, %s, %s)",
-            (user_id, query or f"Scan: {diagnosis}", ai_msg)
+            "INSERT INTO chat_history (user_id, session_id, user_query, ai_response) VALUES (%s, %s, %s, %s)",
+            (user_id, session_id, db_query_text, ai_msg)
         )
+
         db.commit()
+        cursor.close()
         db.close()
 
-        return {"response": ai_msg, "detected": diagnosis if file else None}
+        return {
+            "response": ai_msg,
+            "detected": diagnosis if file else None
+        }
 
     except Exception as e:
         import traceback

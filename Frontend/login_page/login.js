@@ -15,10 +15,13 @@ async function loginUser() {
 
         if (response.ok) {
             localStorage.setItem("farmer_user_id", result.user_id);
-            alert(result.message);  
+            localStorage.setItem("farmer_username", result.username);
+
+            alert(result.message);
             window.location.href = '../ai_query/query.html';
+
         } else {
-            alert(result.detail); 
+            alert(result.detail);
         }
 
     } catch (err) {

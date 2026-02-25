@@ -2,34 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Farmer AI Assistance | Ask AI</title>
+    <title>Farmer AI Assistance | Chat Sessions</title>
     <link rel="stylesheet" href="query.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="app-container">
-
-    <!-- CHAT AREA -->
-    <div class="chat-container" id="chatBox">
-
-        <div class="message ai">
-            <img src="../assets/avatar.png" class="avatar">
-            <div class="bubble">
-                Hello 👋 I’m your AI farming assistant.  
-                Ask me anything about crops, pests, or farming practices.
+<div class="main-layout">
+    <aside class="sidebar">
+        <div class="user-profile" onclick="location.href='../profile/account.html'">
+            <div class="user-avatar">👤</div>
+            <div class="user-info">
+                <span class="user-name" id="farmerName">Farmer</span>
             </div>
         </div>
 
-    </div>
+        <div class="sidebar-top">
+            <button class="new-chat-btn" onclick="startNewChat()">+ New Chat</button>
+        </div>
 
-    <!-- INPUT AREA -->
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="Type your farming question..." />
-        <button onclick="sendMessage()">Ask AI</button>
-        <input type="file" id="imageInput" style="display:none" accept="image/*">
-        <button onclick="document.getElementById('imageInput').click()">📸 Upload Leaf img</button>
-    </div>
+        <div class="sidebar-label">Recent Chats</div>
 
+        <div id="sessionList" class="session-list"></div>
+
+        <div class="sidebar-footer">
+            <button class="clear-btn" onclick="clearChat()">
+                Clear All History
+            </button>
+        </div>
+    </aside>
+
+    <div class="app-container">
+        <header>
+            <div class="header-info">
+                <h2>Smart Farming AI</h2>
+                <p>Agronomist Support System</p>
+            </div>
+            <div class="header-actions">
+                <span class="status-indicator">● System Online</span>
+            </div>
+        </header>
+
+        <div class="chat-container" id="chatBox">
+            <div class="message ai">
+                <img src="../assets/avatar.png" class="avatar">
+                <div class="bubble">
+                    Hello 👋 I’m your AI farming assistant.
+                    Select a previous chat from the sidebar or start a new one to begin.
+                </div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <div class="input-wrapper">
+                <input type="text" id="userInput" placeholder="Ask about crops, pests, or soil..." />
+                <input type="file" id="imageInput" style="display:none" accept="image/*">
+
+                <button class="icon-btn" onclick="document.getElementById('imageInput').click()" title="Analyze Leaf Image">
+                    📁
+                </button>
+            </div>
+
+            <button class="send-btn" onclick="sendMessage()">Ask AI</button>
+        </div>
+    </div>
 </div>
 
 <script src="query.js"></script>
