@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer AI Assistance | Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/toast.css">
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- LEFT SIDE -->
+        <div class="left">
+            <div class="overlay">
+                <h1>Smart Farming<br>Starts Here</h1>
+                <p>
+                    Get AI-powered crop advice, disease detection,
+                    and modern farming insights to optimize your yield.
+                </p>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="right">
+            <div class="login-card glass-panel">
+                <div class="avatar-circle">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <h2>Welcome Back</h2>
+                <p class="subtitle">Please sign in to your account</p>
+
+                <form>
+                    <div class="input-group">
+                        <span class="icon-container"><i class="fa-solid fa-user"></i></span>
+                        <input type="text" id="username" placeholder="Username" required>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="icon-container"><i class="fa-solid fa-lock"></i></span>
+                        <input type="password" id="password" placeholder="Password" required>
+                    </div>
+
+                    <button type="button" class="action-btn" onclick="loginUser()">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> LOGIN
+                    </button>
+                </form>
+
+                <p class="footer-text">AI-powered Farmer Assistance System</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../assets/toast.js"></script>
+    <script src="login.js"></script>
+
+</body>
+
+</html>

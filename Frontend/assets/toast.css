@@ -1,0 +1,94 @@
+/* toast.css */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+    /* Let clicks pass through container */
+}
+
+.toast-notification {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: #2d3748;
+    /* text-main from account.css */
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    pointer-events: auto;
+    /* Re-enable clicks on the toast itself */
+    transform: translateX(120%);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    border-left: 5px solid #3b82f6;
+    /* default info */
+    min-width: 250px;
+    max-width: 350px;
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    border-right: 1px solid rgba(255, 255, 255, 0.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.toast-notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast-icon {
+    font-size: 20px;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Status variants */
+.toast-success {
+    border-left-color: #2e7d32;
+    /* primary-green */
+}
+
+.toast-success .toast-icon {
+    color: #2e7d32;
+}
+
+.toast-error {
+    border-left-color: #e53935;
+    /* danger-red */
+}
+
+.toast-error .toast-icon {
+    color: #e53935;
+}
+
+.toast-warning {
+    border-left-color: #f59e0b;
+}
+
+.toast-warning .toast-icon {
+    color: #f59e0b;
+}
+
+.toast-info {
+    border-left-color: #3b82f6;
+}
+
+.toast-info .toast-icon {
+    color: #3b82f6;
+}
+
+.toast-message {
+    flex-grow: 1;
+    line-height: 1.4;
+    word-wrap: break-word;
+}

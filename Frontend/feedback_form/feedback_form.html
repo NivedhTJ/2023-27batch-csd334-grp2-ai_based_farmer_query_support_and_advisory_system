@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Feedback | AI Advisory System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/toast.css">
+    <link rel="stylesheet" href="feedback_form.css">
+</head>
+
+<body>
+
+    <div class="container glass-panel">
+        <div class="header">
+            <div class="avatar-circle">
+                <i class="fa-solid fa-comment-dots"></i>
+            </div>
+            <h2>Farmer Feedback Form</h2>
+        </div>
+
+        <form id="feedbackForm">
+            <div class="input-group">
+                <label for="name"><i class="fa-solid fa-user"></i> Farmer Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            </div>
+
+            <div class="input-group">
+                <label for="mobile"><i class="fa-solid fa-phone"></i> Mobile Number</label>
+                <input type="tel" id="mobile" name="mobile" placeholder="Enter your mobile number" required>
+            </div>
+
+            <div class="input-group">
+                <label for="category"><i class="fa-solid fa-tractor"></i> Farming Type</label>
+                <select id="category" name="category" required>
+                    <option value="">-- Select --</option>
+                    <option value="crop">Crop Farming</option>
+                    <option value="livestock">Livestock Farming</option>
+                    <option value="mixed">Mixed Farming</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-star"></i> How helpful was the AI advice?</label>
+                <div class="rating">
+                    <label class="radio-label"><input type="radio" name="rating" value="1"> 1</label>
+                    <label class="radio-label"><input type="radio" name="rating" value="2"> 2</label>
+                    <label class="radio-label"><input type="radio" name="rating" value="3"> 3</label>
+                    <label class="radio-label"><input type="radio" name="rating" value="4"> 4</label>
+                    <label class="radio-label"><input type="radio" name="rating" value="5" required> 5</label>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="feedback"><i class="fa-solid fa-pen"></i> Your Feedback / Suggestions</label>
+                <textarea id="feedback" name="feedback" rows="4"
+                    placeholder="Share your experience with the AI advisory system..." required></textarea>
+            </div>
+
+            <button type="submit" class="action-btn">
+                <i class="fa-solid fa-paper-plane"></i> Submit Feedback
+            </button>
+        </form>
+
+        <div class="footer-text">
+            Thank you for helping us improve our AI-based Farmer Advisory System
+        </div>
+    </div>
+
+    <script src="../assets/toast.js"></script>
+    <script src="feedback_form.js"></script>
+</body>
+
+</html>

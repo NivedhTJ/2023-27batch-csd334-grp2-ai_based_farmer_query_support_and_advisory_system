@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Account Management | AI Farmer Advisory</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/toast.css">
+    <link rel="stylesheet" href="account.css">
+</head>
+
+<body>
+
+    <div class="container glass-panel">
+        <div class="header">
+            <div class="avatar-circle">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <h2>Account Settings</h2>
+        </div>
+
+        <div class="account-card">
+            <div class="info-group">
+                <span class="info-label"><i class="fa-solid fa-id-badge"></i> Username</span>
+                <span class="info-value" id="username"></span>
+            </div>
+            <div class="info-group">
+                <span class="info-label"><i class="fa-solid fa-fingerprint"></i> User ID</span>
+                <span class="info-value" id="userId"></span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="action-btn" onclick="clearHistory()">
+                <i class="fa-solid fa-trash-can"></i> Clear History
+            </button>
+            <button class="action-btn" onclick="goToFeedback()">
+                <i class="fa-solid fa-comment-dots"></i> Give Feedback
+            </button>
+            <button class="action-btn logout" onclick="logout()">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <script src="../assets/toast.js"></script>
+    <script src="account.js"></script>
+</body>
+
+</html>
