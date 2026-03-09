@@ -9,7 +9,6 @@
     --text-main: #2d3748;
     --text-muted: #718096;
     --card-bg: rgba(255, 255, 255, 0.85);
-    /* Glass effect */
 }
 
 body {
@@ -35,7 +34,6 @@ body::before {
     bottom: 0;
     left: 0;
     background: rgba(0, 0, 0, 0.4);
-    /* Gentle dark overlay */
     z-index: 0;
 }
 
@@ -183,7 +181,6 @@ h2 {
     border-color: var(--danger-red);
 }
 
-/* Subtle animation on load */
 @keyframes slideUpFade {
     0% {
         opacity: 0;
