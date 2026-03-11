@@ -19,7 +19,7 @@ async function loginUser() {
 
             showToast(result.message, 'success');
             setTimeout(() => {
-                window.location.href = '../ai_query/query.html';
+                window.location.href = '../dashboard/dashboard.html';
             }, 1000);
 
         } else {

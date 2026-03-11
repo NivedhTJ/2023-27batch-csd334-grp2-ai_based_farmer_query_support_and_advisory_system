@@ -1,0 +1,297 @@
+/* dashboard.css */
+:root {
+    --primary-color: #2E7D32;
+    --primary-dark: #1B5E20;
+    --primary-light: #4CAF50;
+    --bg-color: #f4f7f6;
+    --text-color: #333;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.3);
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-color);
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    min-height: 100vh;
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    animation: fadeInDown 0.8s ease;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.user-info h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    color: var(--primary-dark);
+}
+
+.user-info p {
+    margin: 4px 0 0 0;
+    color: #555;
+    font-size: 1rem;
+}
+
+.logout-btn {
+    padding: 10px 20px;
+    background-color: white;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.logout-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.top-widgets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.glassmorphism {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+.pulse-border {
+    position: relative;
+    border-radius: 16px;
+}
+.pulse-border::after {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    border-radius: 18px;
+    background: linear-gradient(45deg, #4CAF50, #81C784, #4CAF50);
+    z-index: -1;
+    animation: pulse 3s infinite;
+    opacity: 0.5;
+}
+
+@keyframes pulse {
+    0% { filter: blur(4px); opacity: 0.4; }
+    50% { filter: blur(8px); opacity: 0.8; }
+    100% { filter: blur(4px); opacity: 0.4; }
+}
+
+.widget {
+    padding: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 0.8s ease backwards;
+    position: relative;
+    overflow: hidden;
+}
+
+.weather-widget { animation-delay: 0.1s; }
+.tip-widget { animation-delay: 0.2s; }
+
+.widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+}
+
+.widget-header h2 {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.4rem;
+    color: var(--primary-dark);
+}
+
+.weather-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.weather-main {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.weather-temp {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.weather-desc {
+    font-size: 1.2rem;
+    color: #555;
+    text-transform: capitalize;
+}
+
+.weather-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+.weather-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.tip-content {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: #2c3e50;
+    font-style: italic;
+    padding: 10px 0;
+    position: relative;
+}
+.tip-content::before {
+    content: '"';
+    font-size: 4rem;
+    color: rgba(76, 175, 80, 0.2);
+    position: absolute;
+    top: -20px;
+    left: -10px;
+}
+
+.quick-links {
+    animation: fadeInUp 0.8s ease backwards;
+    animation-delay: 0.3s;
+}
+
+.quick-links h2 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.action-card {
+    background: white;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 5px;
+    background: var(--primary-color);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
+}
+
+.action-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(46, 125, 50, 0.12);
+}
+
+.action-card:hover::before {
+    transform: scaleX(1);
+}
+
+.card-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+}
+.action-card:hover .card-icon {
+    transform: scale(1.1);
+}
+
+.action-card h3 {
+    margin: 0 0 15px 0;
+    color: var(--primary-dark);
+    font-size: 1.3rem;
+}
+
+.action-card p {
+    margin: 0;
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .top-widgets {
+        grid-template-columns: 1fr;
+    }
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .logout-btn {
+        align-self: stretch;
+        text-align: center;
+    }
+}

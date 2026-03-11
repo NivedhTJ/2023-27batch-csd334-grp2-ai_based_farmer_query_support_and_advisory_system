@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesticide Dilution | AI Farmer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/toast.css">
+    <link rel="stylesheet" href="utilities.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='../dashboard/dashboard.html'" title="Back to Dashboard">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="icon-circle">
+                <i class="fa-solid fa-spray-can"></i>
+            </div>
+            <h2>Pesticide Dilution</h2>
+            <p style="color: #718096; margin: 5px 0 0 0; font-size: 14px;">Calculate exact tank mix ratios</p>
+        </div>
+
+        <form id="calcForm" onsubmit="calculateMix(event)">
+            <div class="form-group">
+                <label class="form-label">Recommended Dosage (ml per Liter)</label>
+                <input type="number" class="form-input" id="dosage" step="0.5" min="0.5" placeholder="e.g. 2" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Spray Tank Size (Liters)</label>
+                <input type="number" class="form-input" id="tankSize" step="1" min="1" value="15" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Total Water Volume Needed for Field (Liters)</label>
+                <input type="number" class="form-input" id="totalWater" step="10" min="10" placeholder="e.g. 150" required>
+            </div>
+
+            <button type="submit" class="calc-btn">
+                <i class="fa-solid fa-calculator"></i> Calculate
+            </button>
+        </form>
+
+        <div class="result-card" id="resultCard">
+            <div class="result-item">
+                <span class="result-label">Chemical per Tank</span>
+                <span class="result-value highlight" id="resPerTank">0 ml</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Total Tanks Required</span>
+                <span class="result-value" id="resTanks">0</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Total Chemical Required</span>
+                <span class="result-value highlight" id="resTotal">0 ml</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/toast.js"></script>
+    <script>
+        function calculateMix(e) {
+            e.preventDefault();
+            const dosage = parseFloat(document.getElementById("dosage").value);
+            const tankSize = parseFloat(document.getElementById("tankSize").value);
+            const totalWater = parseFloat(document.getElementById("totalWater").value);
+
+            if(isNaN(dosage) || isNaN(tankSize) || isNaN(totalWater)) return showToast("Fill all fields", "error");
+
+            const perTank = dosage * tankSize;
+            const totalTanks = Math.ceil(totalWater / tankSize);
+            const totalChem = dosage * totalWater;
+            
+            document.getElementById("resPerTank").textContent = perTank.toFixed(1) + " ml";
+            document.getElementById("resTanks").textContent = totalTanks + " tanks";
+            
+            // Format total chem logically (ml vs L)
+            const displayTotal = totalChem >= 1000 ? (totalChem/1000).toFixed(2) + " Liters" : totalChem.toFixed(1) + " ml";
+            document.getElementById("resTotal").textContent = displayTotal;
+
+            document.getElementById("resultCard").style.display = "flex";
+            showToast("Calculated successfully!", "success");
+        }
+    </script>
+</body>
+</html>

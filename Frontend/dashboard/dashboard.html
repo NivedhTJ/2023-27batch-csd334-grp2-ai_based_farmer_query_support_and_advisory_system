@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard</title>
+    <!-- Include Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/toast.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <!-- Include FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="user-info" onclick="window.location.href='../account_page/account.html'" style="cursor: pointer;" title="Go to Account Settings">
+                <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+                <div>
+                    <h1 id="welcome-message">Welcome!</h1>
+                    <p>Your personalized farming dashboard <i class="fa-solid fa-gear" style="font-size: 0.8em; margin-left: 5px;"></i></p>
+                </div>
+            </div>
+            <!-- Logout button removed, handled in Account Settings now -->
+        </header>
+
+        <section class="top-widgets">
+            <!-- Weather Widget -->
+            <div class="widget weather-widget glassmorphism">
+                <div class="widget-header">
+                    <h2>🌤 Current Weather</h2>
+                </div>
+                <div id="weather-content" class="weather-content">
+                    <div class="loading-spinner"></div>
+                    <p>Fetching weather data...</p>
+                </div>
+            </div>
+
+            <!-- Pro-Tip Widget -->
+            <div class="widget tip-widget glassmorphism pulse-border">
+                <div class="widget-header">
+                    <h2>💡 Pro-Tip of the Day</h2>
+                </div>
+                <div class="tip-content">
+                    <p id="daily-tip">Loading tip...</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-links">
+            <h2>Quick Actions</h2>
+            <div class="cards-grid">
+                <div class="action-card" onclick="window.location.href='../ai_query/query.html'">
+                    <div class="card-icon"><i class="fa-solid fa-robot" style="color: var(--primary-color);"></i></div>
+                    <h3>AI Query</h3>
+                    <p>Ask our AI agronomist about diseases, pests, and more.</p>
+                </div>
+
+                <div class="action-card" onclick="window.location.href='../yield_calculator/yield.html'">
+                    <div class="card-icon"><i class="fa-solid fa-calculator" style="color: var(--primary-color);"></i></div>
+                    <h3>Yield Calculator</h3>
+                    <p>Estimate your harvest yield and potential revenue.</p>
+                </div>
+
+                <!-- Feedback card removed -->
+
+                <div class="action-card" onclick="window.location.href='../utilities/fertilizer.html'">
+                    <div class="card-icon"><i class="fa-solid fa-flask" style="color: var(--primary-color);"></i></div>
+                    <h3>Fertilizer Calculator</h3>
+                    <p>Calculate exact N-P-K requirements for your field.</p>
+                </div>
+
+                <div class="action-card" onclick="window.location.href='../utilities/seed_rate.html'">
+                    <div class="card-icon"><i class="fa-solid fa-wheat-awn" style="color: var(--primary-color);"></i></div>
+                    <h3>Seed Estimator</h3>
+                    <p>Estimate seed quantity and costs before planting.</p>
+                </div>
+
+                <div class="action-card" onclick="window.location.href='../utilities/irrigation.html'">
+                    <div class="card-icon"><i class="fa-solid fa-faucet-drip" style="color: var(--primary-color);"></i></div>
+                    <h3>Irrigation Volume</h3>
+                    <p>Estimate water needed based on crop and method.</p>
+                </div>
+
+                <div class="action-card" onclick="window.location.href='../utilities/pesticide.html'">
+                    <div class="card-icon"><i class="fa-solid fa-spray-can" style="color: var(--primary-color);"></i></div>
+                    <h3>Pesticide Dilution</h3>
+                    <p>Calculate exact mix ratios for agricultural sprays.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="../assets/toast.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

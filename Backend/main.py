@@ -164,6 +164,31 @@ async def get_sessions(user_id: int):
         print(f"Session Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/weather/{user_id}")
+async def get_user_weather(user_id: int):
+    try:
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("SELECT location FROM users WHERE id=%s", (user_id,))
+        result = cursor.fetchone()
+        cursor.close()
+        db.close()
+
+        if not result or not result["location"]:
+            return {"weather": None, "message": "Location not found for user"}
+
+        location = result["location"]
+        weather = get_weather(location)
+
+        if not weather:
+            return {"weather": None, "message": "Failed to fetch weather data"}
+
+        return {"weather": weather, "location": location}
+
+    except Exception as e:
+        print(f"Weather Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/history/{session_id}")
 async def get_chat_history(session_id: str):
     try:
@@ -197,6 +222,49 @@ async def clear_history(user_id: int):
 
         return {"success": True, "message": "History cleared"}
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+class LocationUpdate(BaseModel):
+    location: str
+
+@app.put("/users/{user_id}/location")
+async def update_location(user_id: int, request: LocationUpdate):
+    try:
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("UPDATE users SET location=%s WHERE id=%s", (request.location, user_id))
+        db.commit()
+        cursor.close()
+        db.close()
+        return {"success": True, "message": "Location updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+class PasswordUpdate(BaseModel):
+    old_password: str
+    new_password: str
+
+@app.put("/users/{user_id}/password")
+async def update_password(user_id: int, request: PasswordUpdate):
+    try:
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("SELECT password FROM users WHERE id=%s", (user_id,))
+        user = cursor.fetchone()
+
+        if not user or user["password"] != request.old_password:
+            cursor.close()
+            db.close()
+            raise HTTPException(status_code=401, detail="Incorrect current password")
+
+        cursor.execute("UPDATE users SET password=%s WHERE id=%s", (request.new_password, user_id))
+        db.commit()
+        cursor.close()
+        db.close()
+        return {"success": True, "message": "Password updated successfully"}
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -312,5 +380,60 @@ async def submit_feedback(request: FeedbackRequest):
 
         return {"success": True, "message": "Feedback submitted successfully"}
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/admin/stats")
+async def get_admin_stats():
+    try:
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
+        
+        cursor.execute("SELECT COUNT(*) as total_users FROM users")
+        users_count = cursor.fetchone()["total_users"]
+
+        cursor.execute("SELECT COUNT(*) as total_queries FROM chat_history")
+        queries_count = cursor.fetchone()["total_queries"]
+
+        cursor.close()
+        db.close()
+        return {"total_users": users_count, "total_queries": queries_count}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/admin/users")
+async def get_admin_users():
+    try:
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
+        # Fetching all users, excluding passwords for security
+        cursor.execute("SELECT id, username, location FROM users ORDER BY id DESC")
+        users = cursor.fetchall()
+        
+        cursor.close()
+        db.close()
+        return {"users": users}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/admin/recent-queries")
+async def get_admin_recent_queries():
+    try:
+        db = get_db()
+        cursor = db.cursor(dictionary=True)
+        
+        query = """
+            SELECT c.query_id as timestamp, c.user_query, u.username, u.location 
+            FROM chat_history c
+            JOIN users u ON c.user_id = u.id
+            ORDER BY c.query_id DESC
+            LIMIT 50
+        """
+        cursor.execute(query)
+        recent_queries = cursor.fetchall()
+
+        cursor.close()
+        db.close()
+        return {"queries": recent_queries}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

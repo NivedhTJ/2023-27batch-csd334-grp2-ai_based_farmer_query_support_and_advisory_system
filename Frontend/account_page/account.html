@@ -13,6 +13,9 @@
 
     <div class="container glass-panel">
         <div class="header">
+            <button class="back-btn" onclick="window.location.href='../dashboard/dashboard.html'" title="Back to Dashboard">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
             <div class="avatar-circle">
                 <i class="fa-solid fa-user"></i>
             </div>
@@ -27,6 +30,23 @@
             <div class="info-group">
                 <span class="info-label"><i class="fa-solid fa-fingerprint"></i> User ID</span>
                 <span class="info-value" id="userId"></span>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="section-title"><i class="fa-solid fa-map-location-dot"></i> Update Location</h3>
+            <div class="setting-form">
+                <input type="text" id="newLocation" placeholder="Enter new farming location e.g., Kerala">
+                <button class="update-btn" onclick="updateLocation()">Update</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <h3 class="section-title"><i class="fa-solid fa-lock"></i> Change Password</h3>
+            <div class="setting-form password-form">
+                <input type="password" id="currentPassword" placeholder="Current Password">
+                <input type="password" id="newPassword" placeholder="New Password">
+                <button class="update-btn" onclick="updatePassword()">Update</button>
             </div>
         </div>
 

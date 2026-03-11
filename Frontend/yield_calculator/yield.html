@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yield Calculator | AI Farmer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/toast.css">
+    <link rel="stylesheet" href="yield.css">
+    <style>
+        /* Reusing common dashboard/account CSS concepts */
+        body { margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        
+        .container {
+            width: 90%; max-width: 500px; padding: 40px; border-radius: 20px;
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .header { display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; position: relative; }
+        
+        .back-btn { position: absolute; top: -10px; left: -10px; background: none; border: none; font-size: 1.2rem; color: #718096; cursor: pointer; transition: color 0.3s; padding: 5px; }
+        .back-btn:hover { color: #2e7d32; }
+        
+        .icon-circle { width: 70px; height: 70px; background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(46, 125, 50, 0.3); margin-bottom: 15px; color: white; font-size: 30px; }
+        h2 { margin: 0; font-size: 24px; font-weight: 700; color: #2d3748; letter-spacing: -0.5px; }
+
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-label { display: block; font-size: 14px; font-weight: 600; color: #4a5568; margin-bottom: 8px; }
+        
+        .form-input, .form-select {
+            width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px;
+            background: rgba(255,255,255,0.9); font-family: 'Inter', sans-serif; font-size: 15px;
+            outline: none; transition: all 0.3s; box-sizing: border-box;
+        }
+        .form-input:focus, .form-select:focus { border-color: #2e7d32; box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1); }
+
+        .calc-btn {
+            width: 100%; padding: 15px; border: none; border-radius: 12px; background: #2e7d32;
+            color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s;
+            margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .calc-btn:hover { background: #1b5e20; transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(46, 125, 50, 0.5); }
+
+        .result-card {
+            margin-top: 25px; padding: 20px; border-radius: 14px; background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8); display: none; flex-direction: column; gap: 15px;
+            animation: slideUp 0.4s ease forwards;
+        }
+
+        .result-item { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .result-item:last-child { padding-bottom: 0; border-bottom: none; }
+        .result-label { font-size: 14px; color: #718096; font-weight: 500; }
+        .result-value { font-size: 18px; font-weight: 700; color: #2d3748; }
+        .result-value.highlight { color: #2e7d32; font-size: 22px; }
+
+    </style>
+</head>
+<body>
+    <div id="toast-container"></div>
+    
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='../dashboard/dashboard.html'" title="Back to Dashboard">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="icon-circle">
+                <i class="fa-solid fa-calculator"></i>
+            </div>
+            <h2>Yield Estimator</h2>
+            <p style="color: #718096; margin: 5px 0 0 0; font-size: 14px;">Calculate potential harvest & revenue</p>
+        </div>
+
+        <form id="yieldForm" onsubmit="calculateYield(event)">
+            <div class="form-group">
+                <label class="form-label">Select Crop</label>
+                <select class="form-select" id="cropType" required>
+                    <option value="" disabled selected>Choose a crop...</option>
+                    <option value="wheat">Wheat (1.5 - 2 tons/acre)</option>
+                    <option value="rice">Rice/Paddy (2.5 - 3 tons/acre)</option>
+                    <option value="corn">Corn/Maize (3 - 4 tons/acre)</option>
+                    <option value="soybean">Soybean (1 - 1.5 tons/acre)</option>
+                    <option value="potato">Potato (10 - 15 tons/acre)</option>
+                    <option value="cotton">Cotton (0.5 - 1 ton/acre)</option>
+                    <option value="sugarcane">Sugarcane (30 - 40 tons/acre)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Farm Size (in Acres)</label>
+                <input type="number" class="form-input" id="areaSize" step="0.1" min="0.1" placeholder="e.g. 5.5" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Expected Price (<span id="currencySymbol">₹</span> per kg)</label>
+                <input type="number" class="form-input" id="priceKg" step="0.5" min="1" placeholder="e.g. 25" required>
+            </div>
+
+            <button type="submit" class="calc-btn">
+                <i class="fa-solid fa-chart-line"></i> Calculate Revenue
+            </button>
+        </form>
+
+        <div class="result-card" id="resultCard">
+            <div class="result-item">
+                <span class="result-label">Estimated Yield (Tons)</span>
+                <span class="result-value" id="resYield">0.00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Total Kilograms</span>
+                <span class="result-value" id="resKg">0</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Potential Revenue</span>
+                <span class="result-value highlight" id="resRevenue">₹0.00</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/toast.js"></script>
+    <script src="yield.js"></script>
+</body>
+</html>

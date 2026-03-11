@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | AI Farmer</title>
+    <!-- Use Google Fonts and FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Use shared Toast CSS for popups -->
+    <link rel="stylesheet" href="../assets/toast.css">
+    
+    <style>
+        /* 
+           Simple, beginner-friendly CSS that matches the rest of the project.
+           We use the same green gradient background and "glass" container style.
+        */
+        body { 
+            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        
+        /* The main white box (Glassmorphism effect) */
+        .login-box {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%; 
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center; 
+        }
+
+        /* Title styling */
+        h2 { color: #2e7d32; margin-bottom: 20px; }
+        
+        /* Input fields and buttons */
+        .form-group { margin-bottom: 15px; }
+        
+        input {
+            width: 100%; 
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px; 
+            font-size: 15px; 
+            box-sizing: border-box; /* Makes sure padding doesn't widen the input */
+        }
+
+        button {
+            width: 100%; 
+            padding: 12px; 
+            background-color: #2e7d32; 
+            color: white;
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            margin-top: 10px;
+        }
+        
+        button:hover { background-color: #1b5e20; }
+        
+        /* Link to go back */
+        .back-link { 
+            display: block; 
+            margin-top: 20px; 
+            color: #555; 
+            text-decoration: none; 
+            font-size: 14px; 
+        }
+    </style>
+</head>
+<body>
+    <div id="toast-container"></div>
+    
+    <!-- The Login Form Container -->
+    <div class="login-box">
+        <i class="fa-solid fa-user-shield" style="font-size: 40px; color: #2e7d32; margin-bottom: 10px;"></i>
+        <h2>Admin Gateway</h2>
+        
+        <form id="adminForm" onsubmit="handleAdminLogin(event)">
+            <div class="form-group">
+                <input type="text" id="adminUser" placeholder="Admin Username" required>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="adminPass" placeholder="Admin Password" required>
+            </div>
+            
+            <button type="submit">Log In</button>
+        </form>
+
+        <a href="../login_page/login.html" class="back-link">Return to regular login</a>
+    </div>
+
+    <script src="../assets/toast.js"></script>
+    <script>
+        // Very simple logic to check credentials and route to dashboard
+        function handleAdminLogin(event) {
+            event.preventDefault(); // Prevent page reload
+            
+            // Get what the user typed
+            const username = document.getElementById("adminUser").value;
+            const password = document.getElementById("adminPass").value;
+
+            // Check if it matches the hardcoded admin
+            if (username === "admin" && password === "admin123") {
+                if(window.showToast) showToast("Login successful!", "success");
+                
+                // Save login state so the dashboard knows we are logged in
+                sessionStorage.setItem("is_admin_logged_in", "true");
+                
+                // Go to dashboard
+                setTimeout(function() {
+                    window.location.href = "admin_dashboard.html";
+                }, 1000); // Wait 1 second before changing pages
+                
+            } else {
+                if(window.showToast) showToast("Incorrect username or password", "error");
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Rate Estimator | AI Farmer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/toast.css">
+    <link rel="stylesheet" href="utilities.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='../dashboard/dashboard.html'" title="Back to Dashboard">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="icon-circle">
+                <i class="fa-solid fa-wheat-awn"></i>
+            </div>
+            <h2>Seed Estimator</h2>
+            <p style="color: #718096; margin: 5px 0 0 0; font-size: 14px;">Estimate seed quantity & costs</p>
+        </div>
+
+        <form id="calcForm" onsubmit="calculateSeeds(event)">
+            <div class="form-group">
+                <label class="form-label">Select Crop</label>
+                <select class="form-select" id="cropType" required>
+                    <option value="" disabled selected>Choose a crop...</option>
+                    <option value="wheat">Wheat (~40 kg/acre)</option>
+                    <option value="rice">Rice (~15 kg/acre)</option>
+                    <option value="corn">Corn (~8 kg/acre)</option>
+                    <option value="soybean">Soybean (~30 kg/acre)</option>
+                    <option value="cotton">Cotton (~2 kg/acre)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Field Size (Acres)</label>
+                <input type="number" class="form-input" id="areaSize" step="0.5" min="0.5" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Seed Price per Kg (₹)</label>
+                <input type="number" class="form-input" id="priceKg" step="1" min="1" required>
+            </div>
+
+            <button type="submit" class="calc-btn">
+                <i class="fa-solid fa-calculator"></i> Calculate
+            </button>
+        </form>
+
+        <div class="result-card" id="resultCard">
+            <div class="result-item">
+                <span class="result-label">Total Seeds Required</span>
+                <span class="result-value" id="resKg">0 kg</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Estimated Cost</span>
+                <span class="result-value highlight" id="resCost">₹0.00</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/toast.js"></script>
+    <script>
+        const SEED_RATES = { wheat: 40, rice: 15, corn: 8, soybean: 30, cotton: 2 };
+
+        function calculateSeeds(e) {
+            e.preventDefault();
+            const crop = document.getElementById("cropType").value;
+            const area = parseFloat(document.getElementById("areaSize").value);
+            const price = parseFloat(document.getElementById("priceKg").value);
+
+            if(!crop || isNaN(area) || isNaN(price)) return showToast("Fill all fields", "error");
+
+            const kgNeeded = SEED_RATES[crop] * area;
+            const cost = kgNeeded * price;
+            
+            document.getElementById("resKg").textContent = kgNeeded.toFixed(1) + " kg";
+            document.getElementById("resCost").textContent = "₹" + cost.toLocaleString('en-IN');
+
+            document.getElementById("resultCard").style.display = "flex";
+            showToast("Calculated successfully!", "success");
+        }
+    </script>
+</body>
+</html>

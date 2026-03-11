@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irrigation Volume | AI Farmer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/toast.css">
+    <link rel="stylesheet" href="utilities.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="window.location.href='../dashboard/dashboard.html'" title="Back to Dashboard">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="icon-circle">
+                <i class="fa-solid fa-faucet-drip"></i>
+            </div>
+            <h2>Irrigation Estimator</h2>
+            <p style="color: #718096; margin: 5px 0 0 0; font-size: 14px;">Estimate water needs per season</p>
+        </div>
+
+        <form id="calcForm" onsubmit="calculateWater(event)">
+            <div class="form-group">
+                <label class="form-label">Select Crop</label>
+                <select class="form-select" id="cropType" required>
+                    <option value="" disabled selected>Choose a crop...</option>
+                    <option value="wheat">Wheat (~400mm)</option>
+                    <option value="rice">Rice/Paddy (~1200mm)</option>
+                    <option value="corn">Corn/Maize (~600mm)</option>
+                    <option value="sugarcane">Sugarcane (~2000mm)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Irrigation Method</label>
+                <select class="form-select" id="irrigationMethod" required>
+                    <option value="drip">Drip Irrigation (90% Efficiency)</option>
+                    <option value="sprinkler">Sprinkler (75% Efficiency)</option>
+                    <option value="flood" selected>Flood Irrigation (50% Efficiency)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Field Size (Acres)</label>
+                <input type="number" class="form-input" id="areaSize" step="0.5" min="0.5" required>
+            </div>
+
+            <button type="submit" class="calc-btn">
+                <i class="fa-solid fa-calculator"></i> Calculate
+            </button>
+        </form>
+
+        <div class="result-card" id="resultCard">
+            <div class="result-item">
+                <span class="result-label">Base Crop Requirement</span>
+                <span class="result-value" id="resBase">0 mm</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Total Water Needed (Season)</span>
+                <span class="result-value highlight" id="resLiters">0 Liters</span>
+            </div>
+            <p style="font-size: 11px; color:#888; text-align:center; margin:0;">*1 Acre-mm ≈ 4,047 Liters. Calculation accounts for method efficiency.</p>
+        </div>
+    </div>
+
+    <script src="../assets/toast.js"></script>
+    <script>
+        // Approximate seasonal water requirement in mm
+        const CROP_WATER_MM = { wheat: 400, rice: 1200, corn: 600, sugarcane: 2000 };
+        const METHOD_EFFICIENCY = { drip: 0.90, sprinkler: 0.75, flood: 0.50 };
+
+        function calculateWater(e) {
+            e.preventDefault();
+            const crop = document.getElementById("cropType").value;
+            const method = document.getElementById("irrigationMethod").value;
+            const area = parseFloat(document.getElementById("areaSize").value);
+
+            if(!crop || isNaN(area)) return showToast("Fill all fields", "error");
+
+            const baseMm = CROP_WATER_MM[crop];
+            const eff = METHOD_EFFICIENCY[method];
+            
+            // Required mm accounting for efficiency loss
+            const requiredMm = baseMm / eff; 
+            
+            // 1 Acre = 4046.86 sq meters. 1 mm = 1 liter/sqm = 4046.86 liters/acre
+            const totalLiters = requiredMm * 4046.86 * area;
+            
+            document.getElementById("resBase").textContent = baseMm + " mm";
+            document.getElementById("resLiters").textContent = totalLiters.toLocaleString('en-IN', {maximumFractionDigits: 0}) + " L";
+
+            document.getElementById("resultCard").style.display = "flex";
+            showToast("Calculated successfully!", "success");
+        }
+    </script>
+</body>
+</html>

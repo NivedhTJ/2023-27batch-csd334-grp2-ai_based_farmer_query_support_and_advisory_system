@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | AI Farmer</title>
+    <!-- Use Google Fonts and FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/toast.css">
+    
+    <style>
+        /* 
+           Simple, beginner-friendly CSS that matches the project's green aesthetic.
+        */
+        body { 
+            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); 
+            min-height: 100vh; 
+            padding: 20px;
+        }
+
+        /* Top Navigation Bar */
+        .navbar {
+            background: #2e7d32; 
+            color: white; 
+            padding: 15px 30px; 
+            border-radius: 12px;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px;
+        }
+        
+        .navbar h2 { margin: 0; font-size: 20px; }
+        
+        .logout-btn { 
+            background: white; 
+            color: #2e7d32; 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+
+        /* Summary Cards Container (Flexbox) */
+        .summary-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Individual Card Box */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1; /* Makes cards equal width */
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card h3 { margin: 0; color: #555; font-size: 16px; }
+        .card p { margin: 10px 0 0 0; font-size: 32px; font-weight: bold; color: #2e7d32; }
+
+        /* Tables Container */
+        .tables-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* Allows stacking on small screens */
+        }
+
+        .table-box {
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1;
+            min-width: 300px; /* Ensures table isn't too squished */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow-x: auto; /* Adds scrollbar if table is wide */
+        }
+
+        .table-box h3 { margin-top: 0; color: #2e7d32; border-bottom: 2px solid #e8f5e9; padding-bottom: 10px; }
+
+        /* Simple Table Styling */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { color: #555; background-color: #f1f8e9; }
+        
+        /* Highlight specific text */
+        .location-tag { color: #2e7d32; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="toast-container"></div>
+    
+    <!-- Top Navigation -->
+    <div class="navbar">
+        <h2><i class="fa-solid fa-chart-pie"></i> Admin Portal</h2>
+        <button class="logout-btn" onclick="logoutAdmin()">Sign Out</button>
+    </div>
+
+    <!-- The 2 Big Number Cards -->
+    <div class="summary-container">
+        <div class="card">
+            <h3>Total Users</h3>
+            <p id="totalUsersCount">Loading...</p>
+        </div>
+        <div class="card">
+            <h3>Total AI Queries</h3>
+            <p id="totalQueriesCount">Loading...</p>
+        </div>
+    </div>
+
+    <!-- The Data Tables -->
+    <div class="tables-container">
+        
+        <!-- Table 1: Users -->
+        <div class="table-box">
+            <h3>User List</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                    <tr><td colspan="3">Loading data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Table 2: AI Queries -->
+        <div class="table-box">
+            <h3>Recent User Queries</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Question</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody id="queriesTableBody">
+                    <tr><td colspan="3">Loading data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="../assets/toast.js"></script>
+    <script>
+        // The address of our Python backend
+        const API_URL = "http://127.0.0.1:8000";
+
+        // This runs automatically when the page loads
+        window.onload = function() {
+            // First, make sure the user is actually supposed to be here!
+            const isLoggedIn = sessionStorage.getItem("is_admin_logged_in");
+            if (isLoggedIn !== "true") {
+                window.location.href = "admin_login.html"; // Send them back to login
+                return;
+            }
+            
+            // If they are logged in, load the data
+            loadDashboardData();
+        };
+
+        // This function fetches all the data from the server
+        async function loadDashboardData() {
+            try {
+                // 1. Get the numbers for the top cards
+                let statsResponse = await fetch(API_URL + "/admin/stats");
+                let statsData = await statsResponse.json();
+                
+                // Update the HTML text with the numbers
+                document.getElementById("totalUsersCount").textContent = statsData.total_users;
+                document.getElementById("totalQueriesCount").textContent = statsData.total_queries;
+
+                // 2. Get the list of users
+                let usersResponse = await fetch(API_URL + "/admin/users");
+                let usersData = await usersResponse.json();
+                
+                // Build the HTML rows for the user table
+                let usersHTML = "";
+                for (let i = 0; i < usersData.users.length; i++) {
+                    let user = usersData.users[i];
+                    usersHTML += `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.username}</td>
+                            <td class="location-tag">${user.location || "Unknown"}</td>
+                        </tr>
+                    `;
+                }
+                document.getElementById("usersTableBody").innerHTML = usersHTML; // insert into page
+
+                // 3. Get the list of recent queries
+                let queriesResponse = await fetch(API_URL + "/admin/recent-queries");
+                let queriesData = await queriesResponse.json();
+                
+                // Build the HTML rows for the queries table
+                let queriesHTML = "";
+                for (let i = 0; i < queriesData.queries.length; i++) {
+                    let query = queriesData.queries[i];
+                    queriesHTML += `
+                        <tr>
+                            <td><b>${query.username}</b></td>
+                            <td>${query.user_query}</td>
+                            <td class="location-tag">${query.location || "Unknown"}</td>
+                        </tr>
+                    `;
+                }
+                document.getElementById("queriesTableBody").innerHTML = queriesHTML; // insert into page
+
+            } catch (error) {
+                console.error("Oops! Something went wrong:", error);
+                if(window.showToast) showToast("Could not load data. Is the server running?", "error");
+            }
+        }
+
+        // Logic to logout
+        function logoutAdmin() {
+            sessionStorage.removeItem("is_admin_logged_in"); // Delete the saved login state
+            window.location.href = "admin_login.html"; // Go back to the login screen
+        }
+    </script>
+</body>
+</html>
