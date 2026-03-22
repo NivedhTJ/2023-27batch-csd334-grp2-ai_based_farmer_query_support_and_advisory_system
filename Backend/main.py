@@ -4,8 +4,8 @@ import numpy as np
 import requests
 from PIL import Image
 import tensorflow as tf
-from tensorflow import keras  # type:ignore
-from tensorflow.keras import layers, models  # type:ignore
+from tensorflow import keras
+from tensorflow.keras import layers, models  
 import mysql.connector
 import ollama
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
