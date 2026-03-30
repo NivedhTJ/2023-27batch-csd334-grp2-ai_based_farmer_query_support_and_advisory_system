@@ -19,7 +19,7 @@ This system demonstrates the application of **Human-Centered AI** in agriculture
 ## Tech Stack
 - **Frontend:** HTML, CSS, JavaScript  
 - **Backend:** FastAPI (Python)  
-- **AI Model:** Llama 3.2 (via Ollama)  
+- **AI Model:** Gemma3:1b (via Ollama)  
 - **Database:** MySQL  
 - **Development Tools:** VS Code, Git, GitHub  
 - **Platform:** Web Application  
